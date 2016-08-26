@@ -295,7 +295,7 @@ module.exports = function( app, db ) {
                               // Adicionando el cookie para la sesión de los usuarios
                               rows.cookie = code.cookie;
 
-                              res.header('Content-Type', 'application/json').json( rows );
+                              res.header('Content-Type', 'application/json').status(201).json( rows );
 
                             } else if (err) {
 
@@ -318,8 +318,7 @@ module.exports = function( app, db ) {
 
         var stmt = db.prepare('UPDATE user SET firstname = ?, ' +
             'lastname = ?, ' +
-            'phone = ?, ' +
-            'password = ? ' +
+            'phone = ? ' +
             'WHERE email = ?');
 
         stmt.run(
@@ -327,13 +326,12 @@ module.exports = function( app, db ) {
                 req.body.firstname,
                 req.body.lastname,
                 req.body.phone,
-                req.body.password,
                 req.params.email
             ],
 
             function(err, rows){
 
-                console.log('POST - update User with data = \n {' + '\n email : ' + req.params.email + '\n firstname : ' + req.body.firstname + '\n lastname : ' + req.body.lastname + '\n phone : ' + req.body.phone + '\n password : ' + req.body.password +'\n }');
+                console.log('POST - update User with data = \n {' + '\n email : ' + req.params.email + '\n firstname : ' + req.body.firstname + '\n lastname : ' + req.body.lastname + '\n phone : ' + req.body.phone +'\n }');
 
                 /*
                  * Set de cabeceras para poder permitir acceso
@@ -364,7 +362,6 @@ module.exports = function( app, db ) {
 
                                 console.log('POST - update User with data = \n {' +
                                                                                 '\n email : ' + req.params.email +
-                                                                                '\n password : ' + req.body.password +
                                                                                 '\n firstname : ' + req.body.firstname +
                                                                                 '\n lastname : ' + req.body.lastname +
                                                                                 '\n phone : ' + req.body.phone +
@@ -412,7 +409,7 @@ module.exports = function( app, db ) {
 
        stmt.run(req.params.email);
 
-       res.header('Content-Type', 'application/json').json({"delete_user": req.params.email});
+       res.header('Content-Type', 'application/json').status(204).json({"delete_user": req.params.email});
    };
 
 
@@ -498,7 +495,7 @@ module.exports = function( app, db ) {
     app.get('/api/v1/user/profile/:email', findUser);
 
     // URI para actualizar usuario
-    app.post('/api/v1/user/update/:email', updateUser);
+    app.put('/api/v1/user/update/:email', updateUser);
 
     // URI para actualizar usuario
     app.post('/api/v1/user/forgot-password/:email', updatePasswordUser);
@@ -659,7 +656,7 @@ module.exports = function( app, db ) {
                                                                                 '\n quantity : ' + req.body.quantity +
                                                                             '\n }');
 
-                                res.header( 'Content-Type', 'application/json' ).json( rows );
+                                res.header( 'Content-Type', 'application/json' ).status(201).json( rows );
 
                             }
 
@@ -771,7 +768,7 @@ module.exports = function( app, db ) {
 
         stmt.run(req.params.id);
 
-        res.header( 'Content-Type', 'application/json' ).send( { 'delete_product ' :req.params.id } );
+        res.header( 'Content-Type', 'application/json' ).status(204).send( { 'delete_product ' :req.params.id } );
 
     };
 
@@ -786,7 +783,7 @@ module.exports = function( app, db ) {
     app.get('/api/v1/product/detail/:id', findProduct);
 
     // URI para actualizar un producto
-    app.post('/api/v1/product/update/:id', updateProduct);
+    app.put('/api/v1/product/update/:id', updateProduct);
 
     // URI para eliminar un producto
     app.delete('/api/v1/product/delete/:id', deleteProduct);
